@@ -4,7 +4,7 @@ class DataGenerator:
     """
     数据生成器：生成符合线性模型的高斯分布数据，并支持增量式数据提供
     """
-    def __init__(self, data_dim=5, n_samples=1000, test_ratio=0.2, noise_scale=0.5, seed=42):
+    def __init__(self, data_dim=5, n_samples=1000, test_ratio=0.2, noise_scale=0.05, seed=42):
         """
         初始化数据生成器
         
