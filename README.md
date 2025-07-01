@@ -1,2 +1,46 @@
-# Online-Linear-Regression-Model-with-One-Pass-Reward
-Linear Model for Provably Efficient Online RLHF with  One-Pass Reward Modeling
+# 在线学习方法实现与比较
+
+## 项目简介
+本项目实现了多种在线学习方法，包括在线梯度下降法(Online Gradient Descent, OGM)和在线镜像下降法(Online Mirror Descent, OMD)等，并对它们在线性回归问题上的表现进行了比较。
+
+## 方法介绍
+1. **在线梯度下降(OGM)**: 使用最大似然估计(MLE)进行迭代下降。在每一轮接收到新数据点后，重新拟合整个历史数据集。
+2. **在线镜像下降(OMD)**: 使用低阶逼近的闭式解完成一步下降直接求解。(待实现)
+
+## 项目结构
+```
+.
+├── README.md            # 项目说明文档
+├── data.py              # 数据生成和管理模块
+├── model.py             # 模型定义模块
+├── online_update.py     # 在线学习算法实现模块
+├── main.py              # 主程序入口
+└── utils.py             # 工具函数模块
+```
+
+## 功能特点
+- 生成服从高斯分布的随机数据
+- 实现增量式数据输入机制
+- 支持在线学习算法(OGM)的迭代更新
+- 提供训练集和测试集的性能评估
+- 可视化学习过程和结果
+
+## 使用方法
+1. 运行主程序：
+```bash
+python main.py
+```
+
+2. 可调整的参数包括：
+   - `data_dim`: 数据特征维度
+   - `n_samples`: 总样本数量
+   - `test_ratio`: 测试集比例
+   - `learning_rate`: 学习率
+   - `max_iter`: 每轮最大迭代次数
+
+## 依赖库
+- numpy
+- matplotlib
+
+## 实验结果
+(实验结果将在运行后生成) 
