@@ -83,12 +83,14 @@ python main.py --mode single --method one_pass_omd --dim 10 --samples 300 --lr 0
 
 python main.py --mode single --method one_pass_omd --dim 10 --samples 300 --lr 0.01
 
-# 运行OGD并添加L2正则化
+# 运行OGD并添加L2正则化 （发现其实加了正则化也没用）
 python main.py --mode single --method ogd --weight_decay 0.01
 
 # 运行算法比较，调整参数
-python main.py --mode compare --dim 5 --samples 300 --lr 0.005 --beta 0.1 --weight_decay 0.01
+python main.py --mode compare --dim 20 --samples 600 --lr 0.005 
 ```
+
+dim 与 步长影响巨大！！
 
 ## 依赖库
 - numpy
