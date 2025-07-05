@@ -308,20 +308,17 @@ class ImplicitOMD:
         # 创建一个临时模型用于迭代
         theta = theta_t.copy()
         
-        # 使用梯度下降方法直接最小化完整目标函数
+        # 梯度下降方法
         # f(θ) = ℓ_t(θ) + (1/2η)||θ-θ_t||^2_H_t
         
         # 内部优化的学习率（可调整）
         inner_lr = 0.01
         
         for i in range(self.implicit_iters):
-            # 计算完整目标函数的梯度
             full_grad = self._compute_full_objective_gradient(x_new, y_new, theta, theta_t)
             
-            # 梯度下降更新
             theta_new = theta - inner_lr * full_grad
             
-            # 检查收敛性
             if np.linalg.norm(theta_new - theta) < self.tol:
                 theta = theta_new
                 break
@@ -351,7 +348,6 @@ class ImplicitOMD:
             x_new = X_t[self.t]
             y_new = y_t[self.t]
             
-            # 获取当前权重
             theta_t = self.model.get_weights()
             
             # 计算当前样本的Hessian矩阵
@@ -366,18 +362,13 @@ class ImplicitOMD:
             # 求解隐式更新方程
             theta_new = self._solve_implicit_update(x_new, y_new, theta_t)
             
-            # 更新模型参数
             self.model.set_weights(theta_new)
-            
-            # 增加时间步
             self.t += 1
         
-        # 计算训练损失
         train_loss = self.model.loss(X_t, y_t)
         self.history['train_losses'].append(train_loss)
         self.history['weights'].append(self.model.get_weights().copy())
         
-        # 如果提供了测试集，计算测试损失
         if X_test is not None and y_test is not None:
             test_loss = self.model.loss(X_test, y_test)
             self.history['test_losses'].append(test_loss)
@@ -504,8 +495,7 @@ class OnePassOMD:
         # 计算 ||θ - center||_H
         diff = theta - center
         norm_h = np.sqrt(np.dot(diff, np.dot(H, diff)))
-        
-        # 如果已经在球内，直接返回
+
         if norm_h <= radius:
             return theta
         
@@ -525,15 +515,14 @@ class OnePassOMD:
         返回:
             当前步的训练损失
         """
-        # 记录开始时间
+
         iter_start_time = time.time()
         
-        # 只使用最新的样本点更新模型
+
         if self.t < len(X_t):
             x_new = X_t[self.t]
             y_new = y_t[self.t]
             
-            # 获取当前权重 (θ_t)
             theta_t = self.model.get_weights()
             
             # 步骤1: 定义损失函数 (已隐含在代码中)
@@ -550,14 +539,10 @@ class OnePassOMD:
             g_t = self._compute_loss_gradient(x_new, y_new, theta_t)
             
             # 步骤3: 计算 θ'_{t+1} = θ_t - η * H_tilde_t^{-1} * g_t(θ_t)
-            try:
-                H_tilde_inv = np.linalg.inv(self.H_tilde_t)
-                theta_prime = theta_t - self.learning_rate * np.dot(H_tilde_inv, g_t)
-            except np.linalg.LinAlgError:
-                # 如果矩阵接近奇异，添加正则化
-                H_reg = self.H_tilde_t + np.eye(self.input_dim) * self.reg_param * 10
-                H_tilde_inv = np.linalg.inv(H_reg)
-                theta_prime = theta_t - self.learning_rate * np.dot(H_tilde_inv, g_t)
+
+            H_tilde_inv = np.linalg.inv(self.H_tilde_t)
+            theta_prime = theta_t - self.learning_rate * np.dot(H_tilde_inv, g_t)
+
             
             # 步骤4: 计算 θ_{t+1} = argmin_θ ||θ - θ'_{t+1}||^2_{H_tilde_t} subject to ||θ||_2 ≤ B
             # 这等价于投影到L2球内
